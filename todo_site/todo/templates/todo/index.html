@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--style-->
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5),
+                0 6px 20px 0 rgba(0, 0, 0, 0.39);
+            background: White;
+            margin-bottom: 5%;
+            border-radius: 8px;
+            padding: 2%;
+            overflow: auto;
+            resize: both;
+            text-overflow: ellipsis;
+        }
+
+        .submit_form {
+            text-align: center;
+            padding: 3%;
+            background: White;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4),
+                0 6px 20px 0 rgba(0, 0, 0, 0.36);
+        }
+    </style>
+
+</head>
+
+<body class="container-fluid">
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-info">
+        <strong>{{ message }}</strong>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <center class="row">
+        <h1><i>TODO LIST</i></h1>
+        <hr />
+    </center>
+
+    <div class="row">
+
+        <div class="col-md-8">
+            {% for i in list %}
+            <div class="card">
+                <center><b>{{ i.title }}</b></center>
+                <hr />
+                {{ i.date }}
+                <hr />
+                {{ i.details }}
+                <br />
+                <br />
+                <form action="/del/{{ i.id }}" method="POST" style=" padding-right: 4%; padding-bottom: 3%;">
+                    {% csrf_token %}
+                    <button value="remove" type="submit" class="btn btn-danger" style="float: right;">
+                        <span class="glyphicon glyphicon-trash"></span> &nbsp; Remove
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-1"> </div>
+
+        <div class="col-md-3">
+            <div class="submit_form">
+                <h3>Add New Task</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ forms }}
+                    <center>
+                        <input type="submit" class="btn btn-default" value="Submit" />
+                    </center>
+                </form>
+            </div>
+            <br>
+
+            <div class="submit_form">
+                <h3>Upload Document</h3>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="file">Select File:</label>
+                        {{ document_form.file }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Upload</button>
+                </form>
+                <br>
+                <a href="{% url 'document_list' %}" class="btn btn-default btn-block">View Uploaded Documents</a>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

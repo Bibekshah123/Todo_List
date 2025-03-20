@@ -1,0 +1,17 @@
+<!-- templates/document_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Uploaded Documents</title>
+</head>
+<body>
+    <h1>Uploaded Documents</h1>
+    <ul>
+        {% for document in documents %}
+            <li><a href="{{ document.file.url }}">{{ document.file.name }}</a></li>
+        {% empty %}
+            <li>No documents uploaded yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
