@@ -1,2 +1,2 @@
 # Todo_List
-Made todo list using django and used postgesql for backend.
+Made todo list web app using django and used postgesql for backend.
