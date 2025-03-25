@@ -1,7 +1,11 @@
-from django.shortcuts import render, redirect
+from django.http import FileResponse
+from django.shortcuts import render, redirect,  get_object_or_404
 from .models import Todo, Document
 from .forms import TodoForm, DocumentForm
 from django.contrib import messages
+from django.conf import settings
+import os
+
 
 def index(request):
     task = Todo.objects.all()
@@ -49,3 +53,26 @@ def upload_document(request):
         form = DocumentForm()
 
     return render(request, 'upload_document.html', {'document_form': form})
+
+def delete_file(request, file_id):
+    document = get_object_or_404(Document, id=file_id)
+
+    # Delete the file from storage
+    if document.file:  # Ensure there is a file
+        file_path = os.path.join(settings.MEDIA_ROOT, str(document.file))
+        if os.path.exists(file_path):
+            os.remove(file_path)  # Remove the file from storage
+
+    # Delete the record from the database
+    document.delete()
+    
+    return redirect("document_list")  # Redirect after deleting
+
+def download_file(request, file_id):
+    document = get_object_or_404(Document, id=file_id)
+    file_path = os.path.join(settings.MEDIA_ROOT, str(document.file))
+
+    if os.path.exists(file_path):
+        return FileResponse(open(file_path, 'rb'), as_attachment=True)
+    else:
+        return redirect("document_list")  # Redirect if file not found
